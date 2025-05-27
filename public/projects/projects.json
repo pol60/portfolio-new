@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "title": "E-commerce платформа",
+    "description": "Полнофункциональный интернет-магазин с каталогом товаров, корзиной, системой оплаты и панелью администратора.",
+    "category": "E-commerce",
+    "image": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80",
+    "demoUrl": "https://example-ecommerce.com",
+    "githubUrl": "https://github.com/example/ecommerce",
+    "technologies": ["React", "Node.js", "MongoDB", "Stripe"]
+  },
+  {
+    "id": 2,
+    "title": "Система управления задачами",
+    "description": "Приложение для управления проектами с канбан-досками, отслеживанием времени и совместной работой в команде.",
+    "category": "Productivity",
+    "image": "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=800&q=80",
+    "demoUrl": "https://example-taskmanager.com",
+    "githubUrl": "https://github.com/example/taskmanager",
+    "technologies": ["Next.js", "TypeScript", "PostgreSQL", "Supabase"]
+  },
+  {
+    "id": 3,
+    "title": "Социальная платформа",
+    "description": "Социальная сеть с профилями пользователей, лентой новостей, сообщениями и системой рекомендаций.",
+    "category": "Social",
+    "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80",
+    "demoUrl": "https://example-social.com",
+    "githubUrl": "https://github.com/example/social",
+    "technologies": ["React", "GraphQL", "Node.js", "MongoDB"]
+  }
+]

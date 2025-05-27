@@ -1,0 +1,266 @@
+/* Chat.css */
+@keyframes slideUpFromBottomLeft {
+  0% {
+    transform: translate(100px, 100px) scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(20px, 20px) scale(0.8);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDownToBottomLeft {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(20px, 20px) scale(0.8);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(100px, 100px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes morphIcon {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.5);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+  }
+}
+
+@keyframes notificationPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.chat-button-enter {
+  animation: slideUpFromBottomLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.chat-button-exit {
+  animation: slideDownToBottomLeft 0.6s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+}
+
+.chat-button {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+  animation: pulse 3s infinite !important;
+  z-index: 50 !important;
+}
+
+.chat-button:hover {
+  animation: pulse 1.5s infinite !important;
+}
+
+.icon-morph {
+  animation: morphIcon 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform: none !important;
+}
+
+.chat-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.chat-button:hover::before {
+  width: 100%;
+  height: 100%;
+}
+
+.notification-badge {
+  position: absolute !important;
+  top: -10px !important;
+  right: -10px !important;
+  background: linear-gradient(45deg, #ef4444, #dc2626) !important;
+  color: white !important;
+  border-radius: 50% !important;
+  min-width: 24px !important;
+  height: 24px !important;
+  padding: 0 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  font-weight: bold !important;
+  animation: notificationPulse 1s infinite !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  z-index: 60 !important;
+  border: 2px solid white !important;
+}
+
+/* Адаптивные стили для модального окна чата */
+.chat-window {
+  position: fixed !important;
+  width: min(90vw, 500px) !important;
+  height: min(85vh, 700px) !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  transition: all 0.3s ease-in-out !important;
+  transform-origin: bottom right !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden !important;
+}
+
+/* Десктопная версия */
+@media (min-width: 1024px) {
+  .chat-window {
+    width: min(30vw, 500px) !important;
+    height: min(70vh, 700px) !important;
+  }
+}
+
+/* Планшеты и маленькие десктопы */
+@media (max-width: 1023px) {
+  .chat-window {
+    width: min(40vw, 450px) !important;
+    height: min(75vh, 650px) !important;
+  }
+}
+
+/* Большие планшеты и маленькие ноутбуки */
+@media (max-width: 768px) {
+  .chat-window {
+    width: min(50vw, 400px) !important;
+    height: min(80vh, 600px) !important;
+  }
+}
+
+/* Мобильные устройства */
+@media (max-width: 640px) {
+  .chat-window {
+    width: 90vw !important;
+    height: 85vh !important;
+    bottom: 10px !important;
+    right: 10px !important;
+    margin: 0 auto !important;
+  }
+  
+  .chat-button {
+    width: 56px !important;
+    height: 56px !important;
+    bottom: 16px !important;
+    right: 16px !important;
+  }
+}
+
+/* Очень маленькие мобильные устройства */
+@media (max-width: 360px) {
+  .chat-window {
+    width: 95vw !important;
+    height: 80vh !important;
+    bottom: 5px !important;
+    right: 5px !important;
+  }
+}
+
+/* Стили для контента внутри модального окна */
+.chat-window .chat-header {
+  padding: clamp(12px, 2vw, 20px) !important;
+}
+
+.chat-window .chat-messages {
+  height: calc(100% - 140px) !important;
+  padding: clamp(8px, 1.5vw, 16px) !important;
+}
+
+.chat-window .chat-input {
+  padding: clamp(8px, 1.5vw, 16px) !important;
+}
+
+.chat-window .message {
+  max-width: 85% !important;
+  margin-bottom: clamp(8px, 1.5vw, 16px) !important;
+}
+
+.chat-window .message-content {
+  padding: clamp(8px, 1.5vw, 16px) !important;
+  font-size: clamp(14px, 1.5vw, 16px) !important;
+}
+
+/* Анимации для плавного изменения размеров */
+@keyframes resizeWindow {
+  from {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.chat-window {
+  animation: resizeWindow 0.3s ease-out !important;
+}
+
+/* Handle для изменения размера */
+.resize-handle {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+  background: transparent;
+}
+
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-right: 2px solid rgba(0,0,0,0.3);
+  border-bottom: 2px solid rgba(0,0,0,0.3);
+  border-radius: 0 0 8px 0;
+}

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo192.svg" />
+    <link rel="icon" type="image/png" href="/logo192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#4F46E5" />
+
+    <meta
+      name="description"
+      content="Интерактивное портфолио разработчика с современным дизайном и анимациями"
+    />
+    <meta
+      name="keywords"
+      content="портфолио, разработчик, React, TypeScript, веб-разработка"
+    />
+    <meta name="author" content="Ваше Имя" />
+    <meta property="og:title" content="Портфолио Разработчика" />
+    <meta
+      property="og:description"
+      content="Интерактивное портфолио разработчика с современным дизайном и анимациями"
+    />
+    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:url" content="https://your-domain.com" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com;
+      style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+      img-src 'self' data: https: http://localhost:3001;
+      font-src 'self' https://cdnjs.cloudflare.com;
+      connect-src 'self' https://api.your-domain.com ws://localhost:5173 wss://localhost:5173 ws://localhost:3001 wss://localhost:3001;
+    "
+    />
+
+    <link rel="apple-touch-icon" href="/logo192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <title>Портфолио Разработчика</title>
+  </head>
+  <body>
+    <noscript>Для работы приложения необходимо включить JavaScript.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
