@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useTranslation } from "react-i18next";
 
 export interface Message {
   id: string;
@@ -9,6 +10,7 @@ export interface Message {
   timestamp: number;
   isRead: boolean;
   fromUser: boolean;
+  isWelcome?: boolean; // теперь опционально
 }
 
 export interface FormState {
@@ -25,6 +27,8 @@ export interface FileData {
 }
 
 export const useWebSocketConnection = () => {
+  const { t, i18n } = useTranslation();
+
   // Инициализация userId при первом входе на сайт
   const [currentUserId] = useState<string>(() => {
     const saved = localStorage.getItem("chat_user_id");
@@ -85,7 +89,7 @@ export const useWebSocketConnection = () => {
         setMessages(parsed);
         // Проверяем есть ли приветственное сообщение
         const hasWelcome = parsed.some(
-          (msg: Message) => !msg.fromUser && msg.text.includes("Привет! 👋"),
+          (msg: Message) => !msg.fromUser && msg.text.includes(t('chat.welcome_message')),
         );
         setHasWelcomeMessage(hasWelcome);
       } catch {
@@ -198,7 +202,7 @@ export const useWebSocketConnection = () => {
 
               // Проверяем есть ли приветственное сообщение
               const hasWelcome = combined.some(
-                (msg) => !msg.fromUser && msg.text.includes("Привет! 👋"),
+                (msg) => !msg.fromUser && msg.text.includes(t('chat.welcome_message')),
               );
               setHasWelcomeMessage(hasWelcome);
 
@@ -237,18 +241,18 @@ export const useWebSocketConnection = () => {
           if (data.action === "welcome_message") {
             const welcomeMsg: Message = {
               id: data.id || uuidv4(),
-              text: data.text,
+              text: t('chat.welcome_message'),
               type: "text",
               timestamp: data.timestamp || Date.now(),
               isRead: false,
               fromUser: false,
+              isWelcome: true, // <--- добавляем флаг
             };
             setMessages((prev) => {
               if (prev.some((m) => m.id === welcomeMsg.id)) return prev;
               return [...prev, welcomeMsg];
             });
             setHasWelcomeMessage(true);
-            // Увеличиваем счетчик непрочитанных для приветственного сообщения
             setUnreadCount((c) => c + 1);
           }
 
@@ -507,6 +511,25 @@ export const useWebSocketConnection = () => {
     }
     setForm((prev) => ({ ...prev, topic }));
   }, []);
+
+  // Автоматический перевод приветственного сообщения при смене языка
+  useEffect(() => {
+    const handleLangChange = () => {
+      setMessages((prev) => {
+        // ищем последнее приветственное сообщение (isWelcome)
+        return prev.map((msg) => {
+          if (msg.isWelcome) {
+            return { ...msg, text: i18n.getFixedT(i18n.language)('chat.welcome_message') };
+          }
+          return msg;
+        });
+      });
+    };
+    i18n.on('languageChanged', handleLangChange);
+    return () => {
+      i18n.off('languageChanged', handleLangChange);
+    };
+  }, [i18n, t]);
 
   return {
     currentUserId,

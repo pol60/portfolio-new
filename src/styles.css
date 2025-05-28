@@ -58,6 +58,23 @@ body {
   padding-right: env(safe-area-inset-right, 0);
 }
 
+/* Стилизация скроллбара для всей страницы */
+html, body {
+  scrollbar-width: thin;
+  scrollbar-color: #a5b4fc #f3f4f6;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  width: 12px;
+  background: transparent;
+}
+html::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #a5b4fc 30%, #c4b5fd 70%);
+  border-radius: 8px;
+}
+html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #818cf8 30%, #a78bfa 70%);
+}
+
 @media (max-width: 640px) {
   .chat-window {
     padding-bottom: env(safe-area-inset-bottom, 0) !important;

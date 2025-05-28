@@ -5,7 +5,6 @@
     "skills": "Fähigkeiten",
     "projects": "Projekte",
     "contact": "Kontakt",
-    "portfolio": "Portfolio",
     "menu": "Menü"
   },
   "home": {
@@ -84,6 +83,7 @@
     "change_topic_desc": "Erzählen Sie uns, worüber Sie sprechen möchten",
     "new_topic": "Neues Thema",
     "save": "Speichern",
-    "support_label": "Support-Chat öffnen"
+    "support_label": "Support-Chat öffnen",
+    "welcome_message": "Hallo! 👋 Ich bin bereit, Ihnen bei Ihrem Projekt zu helfen. Erzählen Sie mir, welche Idee Sie umsetzen möchten?"
   }
 }

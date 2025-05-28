@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const LanguageSelector: React.FC = () => {
@@ -12,11 +12,20 @@ const LanguageSelector: React.FC = () => {
     { code: "de", name: "Deutsch", flag: "🇩🇪" },
   ];
 
+  // Восстанавливаем язык из localStorage при монтировании компонента
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("i18nextLng");
+    if (savedLanguage && i18n.language !== savedLanguage) {
+      i18n.changeLanguage(savedLanguage);
+    }
+  }, [i18n]);
+
   const currentLanguage =
     languages.find((lang) => lang.code === i18n.language) || languages[0];
 
   const handleLanguageChange = (languageCode: string) => {
     i18n.changeLanguage(languageCode);
+    localStorage.setItem("i18nextLng", languageCode);
     setIsOpen(false);
   };
 

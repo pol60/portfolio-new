@@ -20,12 +20,13 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: "ru",
+    fallbackLng: "en",
     debug: false,
 
     detection: {
       order: ["localStorage", "navigator", "htmlTag"],
       caches: ["localStorage"],
+      lookupLocalStorage: "i18nextLng",
     },
 
     interpolation: {

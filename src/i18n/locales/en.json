@@ -5,7 +5,6 @@
     "skills": "Skills",
     "projects": "Projects",
     "contact": "Contact",
-    "portfolio": "Portfolio",
     "menu": "Menu"
   },
   "home": {
@@ -84,6 +83,7 @@
     "change_topic_desc": "Tell us what you'd like to talk about",
     "new_topic": "New topic",
     "save": "Save",
-    "support_label": "Open support chat"
+    "support_label": "Open support chat",
+    "welcome_message": "Hi! 👋 I'm ready to help you with your project. Tell me what idea you want to implement?"
   }
 }

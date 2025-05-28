@@ -42,6 +42,8 @@ const Chat: React.FC<ChatProps> = ({
 
   const [newMessage, setNewMessage] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpening, setIsOpening] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showFilePreview, setShowFilePreview] = useState<FileData | null>(null);
   const [showTopicForm, setShowTopicForm] = useState(false);
@@ -72,7 +74,7 @@ const Chat: React.FC<ChatProps> = ({
         const windowHeight = window.innerHeight;
         const keyboardHeight = windowHeight - viewportHeight;
 
-        setIsKeyboardOpen(keyboardHeight > 150); // Клавиатура считается открытой если разница больше 150px
+        setIsKeyboardOpen(keyboardHeight > 150);
       }
     };
 
@@ -209,32 +211,40 @@ const Chat: React.FC<ChatProps> = ({
   // Обработчик открытия чата
   const handleOpenChat = () => {
     setIsOpen(true);
+    setIsOpening(true);
     setChatOpenedOnce(true);
     onOpen?.();
 
-    // Отправляем сигнал серверу что чат открыт (НЕ возврат на сайт)
-    if (webSocketConnection.isConnected) {
-      // Здесь можно добавить логику если нужно
-    }
+    // через 400 мс убираем флаг открытия
+    setTimeout(() => {
+      setIsOpening(false);
+    }, 400);
+  };
+
+  // Обработчик закрытия чата
+  const handleClose = () => {
+    setIsClosing(true);
+
+    // через 400 мс убираем окно и сбрасываем флаги
+    setTimeout(() => {
+      setIsOpen(false);
+      setShowForm(false);
+      setIsFormRequired(false);
+      setIsClosing(false);
+      onClose?.();
+    }, 400);
   };
 
   // Синхронизация с внешним состоянием
   useEffect(() => {
     if (externalIsOpen !== undefined) {
-      setIsOpen(externalIsOpen);
+      if (externalIsOpen) {
+        handleOpenChat();
+      } else {
+        handleClose();
+      }
     }
   }, [externalIsOpen]);
-
-  // Обработчик закрытия чата
-  const handleClose = () => {
-    setIsOpen(false);
-    setShowForm(false);
-    setIsFormRequired(false);
-    onClose?.();
-
-    // Отправляем сигнал что чат закрыт (НЕ покидание сайта)
-    // Это НЕ должно вызывать уведомление администратору о покидании сайта
-  };
 
   return (
     <>
@@ -286,7 +296,11 @@ const Chat: React.FC<ChatProps> = ({
       {isOpen && (
         <div
           ref={chatWindowRef}
-          className={`chat-window animate-in slide-in-from-bottom-4 slide-in-from-right-4 duration-500 ${isKeyboardOpen ? "keyboard-open" : ""}`}
+          className={`chat-window ${
+            isOpening ? "opening" : ""
+          } ${isClosing ? "closing" : ""} ${
+            isKeyboardOpen ? "keyboard-open" : ""
+          }`}
         >
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full h-full flex flex-col border border-gray-200 dark:border-gray-700 overflow-hidden">
             {/* Шапка чата с градиентом */}
@@ -299,11 +313,15 @@ const Chat: React.FC<ChatProps> = ({
                       : "bg-red-400 shadow-red-400/50"
                   }`}
                   style={{
-                    boxShadow: `0 0 10px ${isConnected ? "#4ade80" : "#f87171"}`,
+                    boxShadow: `0 0 10px ${
+                      isConnected ? "#4ade80" : "#f87171"
+                    }`,
                   }}
                 />
                 <div>
-                  <h3 className="font-semibold text-lg">{t("chat.support")}</h3>
+                  <h3 className="font-semibold text-lg">
+                    {t("chat.support")}
+                  </h3>
                   <button
                     onClick={() => setShowTopicForm(true)}
                     className="text-sm opacity-80 hover:opacity-100 transition-opacity duration-200 underline decoration-dotted"
@@ -324,7 +342,7 @@ const Chat: React.FC<ChatProps> = ({
 
             {/* Форма имени/темы - показывается только при попытке отправить сообщение */}
             {showForm && isFormRequired ? (
-              <div className="p-6 flex-1 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+              <div className="p-6 flex-1 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 chat-form-scrollable">
                 <form onSubmit={handleSubmitForm} className="space-y-6">
                   <div className="text-center mb-6">
                     <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -437,7 +455,7 @@ const Chat: React.FC<ChatProps> = ({
                             {msg.type === "photo" &&
                               (() => {
                                 const localFile = tempFiles.find(
-                                  (f) => f.id === msg.fileId,
+                                  (f) => f.id === msg.fileId
                                 );
                                 const src = localFile
                                   ? localFile.preview!
@@ -468,7 +486,7 @@ const Chat: React.FC<ChatProps> = ({
                             {msg.type === "file" &&
                               (() => {
                                 const localFile = tempFiles.find(
-                                  (f) => f.id === msg.fileId,
+                                  (f) => f.id === msg.fileId
                                 );
                                 const href = localFile
                                   ? localFile.url
@@ -491,7 +509,11 @@ const Chat: React.FC<ChatProps> = ({
                               <span>{formatTime(msg.timestamp)}</span>
                               {msg.fromUser && (
                                 <i
-                                  className={`fas ${msg.isRead ? "fa-check-double text-blue-300" : "fa-check"} ml-2`}
+                                  className={`fas ${
+                                    msg.isRead
+                                      ? "fa-check-double text-blue-300"
+                                      : "fa-check"
+                                  } ml-2`}
                                 ></i>
                               )}
                             </div>

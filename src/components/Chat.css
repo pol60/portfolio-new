@@ -1,4 +1,8 @@
 /* Chat.css */
+
+/* --------------------------------------------------
+   1) Ключевые кадры для анимации кнопки
+-------------------------------------------------- */
 @keyframes slideUpFromBottomLeft {
   0% {
     transform: translate(100px, 100px) scale(0.3);
@@ -29,6 +33,9 @@
   }
 }
 
+/* --------------------------------------------------
+   2) Анимация иконки внутри круглой кнопки
+-------------------------------------------------- */
 @keyframes morphIcon {
   0% {
     transform: scale(1);
@@ -44,9 +51,11 @@
   }
 }
 
+/* --------------------------------------------------
+   3) Пульс круглой кнопки
+-------------------------------------------------- */
 @keyframes pulse {
-  0%,
-  100% {
+  0%, 100% {
     box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
   }
   50% {
@@ -54,6 +63,9 @@
   }
 }
 
+/* --------------------------------------------------
+   4) Анимация бейджа уведомлений
+-------------------------------------------------- */
 @keyframes notificationPulse {
   0% {
     transform: scale(1);
@@ -66,14 +78,15 @@
   }
 }
 
+/* --------------------------------------------------
+   5) Кнопка поддержки (анимация входа/выхода)
+-------------------------------------------------- */
 .chat-button-enter {
-  animation: slideUpFromBottomLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)
-    forwards;
+  animation: slideUpFromBottomLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 .chat-button-exit {
-  animation: slideDownToBottomLeft 0.6s cubic-bezier(0.55, 0.055, 0.675, 0.19)
-    forwards;
+  animation: slideDownToBottomLeft 0.6s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
 }
 
 .chat-button {
@@ -110,9 +123,7 @@
   background: rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition:
-    width 0.6s,
-    height 0.6s;
+  transition: width 0.6s, height 0.6s;
 }
 
 .chat-button:hover::before {
@@ -141,32 +152,72 @@
   border: 2px solid white !important;
 }
 
-/* Адаптивные стили для модального окна чата */
+/* --------------------------------------------------
+   6) Анимации модального окна (от кнопки и обратно)
+-------------------------------------------------- */
+@keyframes slideUpFromButton {
+  0% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDownToButton {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+}
+
+/* --------------------------------------------------
+   7) Базовые стили для модального окна
+-------------------------------------------------- */
 .chat-window {
   position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
   width: min(90vw, 500px) !important;
   height: min(85vh, 700px) !important;
   max-width: 100% !important;
   max-height: 100% !important;
-  transition: all 0.3s ease-in-out !important;
-  transform-origin: center !important;
-  bottom: 24px !important;
-  right: 24px !important;
   border-radius: 16px !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
   overflow: hidden !important;
   z-index: 9999 !important;
+  transform-origin: bottom right !important;
+  transition: none !important;
 }
 
-/* Десктопная версия */
+/* Класс открытия: без мигания, плавно растёт из точки кнопки */
+.chat-window.opening {
+  animation: slideUpFromButton 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+/* Класс закрытия: сжимается обратно в точку кнопки */
+.chat-window.closing {
+  animation: slideDownToButton 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+/* --------------------------------------------------
+   8) Адаптивные стили для модального окна
+-------------------------------------------------- */
+/* Десктоп */
 @media (min-width: 1024px) {
   .chat-window {
     width: min(30vw, 500px) !important;
-    height: min(70vh, 700px) !important;
+    height: min(85vh, 1000px) !important;
   }
 }
 
-/* Планшеты и маленькие десктопы */
+/* Планшеты и небольшие десктопы */
 @media (max-width: 1023px) {
   .chat-window {
     width: min(40vw, 450px) !important;
@@ -188,13 +239,14 @@
     width: 95vw !important;
     height: 60vh !important;
     max-height: 90vh !important;
-    top: 50% !important;
+    bottom: 24px !important;
     left: 50% !important;
-    bottom: auto !important;
     right: auto !important;
-    transform: translate(-50%, -50%) !important;
+    top: auto !important;
+    transform: translateX(-50%) !important;
     margin: 0 !important;
     border-radius: 12px !important;
+    transform-origin: center bottom !important;
   }
 
   .chat-button {
@@ -213,7 +265,7 @@
   /* Обработка виртуальной клавиатуры */
   .chat-window.keyboard-open {
     height: 70vh !important;
-    top: 15vh !important;
+    bottom: 24px !important;
     transform: translateX(-50%) !important;
   }
 }
@@ -223,12 +275,13 @@
   .chat-window {
     width: 98vw !important;
     height: 95vh !important;
-    top: 50% !important;
+    bottom: 24px !important;
     left: 50% !important;
-    bottom: auto !important;
     right: auto !important;
-    transform: translate(-50%, -50%) !important;
+    top: auto !important;
+    transform: translateX(-50%) !important;
     border-radius: 8px !important;
+    transform-origin: center bottom !important;
   }
 
   .chat-button {
@@ -239,40 +292,44 @@
   }
 }
 
-/* Ландшафтная ориентация на мобильных */
+/* Ландшафтная ориентация (мобильные) */
 @media (max-width: 768px) and (orientation: landscape) {
   .chat-window {
     width: 85vw !important;
     height: 85vh !important;
-    top: 50% !important;
+    bottom: 24px !important;
     left: 50% !important;
-    bottom: auto !important;
     right: auto !important;
-    transform: translate(-50%, -50%) !important;
+    top: auto !important;
+    transform: translateX(-50%) !important;
+    transform-origin: center bottom !important;
   }
 }
 
-/* Стили для предотвращения зума */
+/* --------------------------------------------------
+   9) Стили для предотвращения зума
+-------------------------------------------------- */
 .no-zoom {
   font-size: 16px !important;
   -webkit-text-size-adjust: 100% !important;
   -webkit-appearance: none !important;
 }
 
-/* Улучшенная обработка клавиатуры */
+/* --------------------------------------------------
+   10) Специфичные iOS Safari стили
+-------------------------------------------------- */
 @supports (-webkit-touch-callout: none) {
-  /* iOS Safari специфичные стили */
   .chat-window {
     -webkit-overflow-scrolling: touch !important;
   }
-
   .chat-input-field {
     -webkit-appearance: none !important;
     border-radius: 0 !important;
   }
 }
-
-/* Стили для контента внутри модального окна */
+/* --------------------------------------------------
+   11) Стили для внутреннего контента (заголовок/сообщения/инпуты)
+-------------------------------------------------- */
 .chat-window .chat-header {
   padding: clamp(12px, 2vw, 20px) !important;
 }
@@ -296,39 +353,29 @@
   font-size: clamp(14px, 1.5vw, 16px) !important;
 }
 
-/* Анимации для плавного изменения размеров */
-@keyframes resizeWindow {
-  from {
-    transform: scale(0.95);
-    opacity: 0.8;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+/* Скроллинг для формы заполнения имени и темы */
+.chat-form-scrollable {
+  height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
-.chat-window {
-  animation: resizeWindow 0.3s ease-out !important;
-}
-
-/* Handle для изменения размера */
-.resize-handle {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  bottom: 0;
-  right: 0;
-  cursor: se-resize;
+/* Стилизация скроллбара для формы заполнения (и других скроллов внутри чата) */
+.chat-form-scrollable::-webkit-scrollbar {
+  width: 10px;
   background: transparent;
 }
-
-.resize-handle::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-right: 2px solid rgba(0, 0, 0, 0.3);
-  border-bottom: 2px solid rgba(0, 0, 0, 0.3);
-  border-radius: 0 0 8px 0;
+.chat-form-scrollable::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #a5b4fc 30%, #c4b5fd 70%);
+  border-radius: 8px;
 }
+.chat-form-scrollable::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #818cf8 30%, #a78bfa 70%);
+}
+
+/* Для Firefox */
+.chat-form-scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: #a5b4fc #f3f4f6;
+}
+

@@ -22,16 +22,6 @@ const Navbar: React.FC<NavbarProps> = ({
       className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${activeSection !== "home" ? "bg-gray-900/80 backdrop-blur-md shadow-md" : "bg-transparent"}`}
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <a
-          href="#home"
-          className="text-2xl font-bold text-indigo-600 cursor-pointer"
-          onClick={() => scrollToSection("home")}
-        >
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-            {t("nav.portfolio")}
-          </span>
-        </a>
-
         <nav className="hidden md:flex items-center space-x-8">
           {["home", "about", "skills", "projects", "contact"].map((section) => (
             <a
@@ -55,7 +45,8 @@ const Navbar: React.FC<NavbarProps> = ({
           ))}
         </nav>
 
-        <div className="flex items-center space-x-4">
+        {/* Кнопки справа */}
+        <div className="flex items-center space-x-4 ml-auto">
           <LanguageSelector />
           <button
             className="md:hidden p-2 rounded-full hover:bg-gray-700 transition-colors cursor-pointer"
