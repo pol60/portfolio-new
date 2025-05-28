@@ -1,9 +1,6 @@
-import React, { useState } from "react";
-import Chat from "../components/Chat";
+import React from "react";
 
 const Contact: React.FC = () => {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-
   return (
     <section
       id="contact"
@@ -18,7 +15,8 @@ const Contact: React.FC = () => {
           </h2>
           <div className="w-20 h-1 bg-indigo-600 mx-auto rounded-full"></div>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mt-4">
-            Нужна помощь в разработке приложения? Я помогу вам с технической консультацией и реализацией вашего проекта.
+            Нужна помощь в разработке приложения? Я помогу вам с технической
+            консультацией и реализацией вашего проекта.
           </p>
         </div>
 
@@ -38,7 +36,8 @@ const Contact: React.FC = () => {
                     Техническая консультация
                   </h4>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Профессиональный анализ вашей идеи и рекомендации по технической реализации
+                    Профессиональный анализ вашей идеи и рекомендации по
+                    технической реализации
                   </p>
                 </div>
               </div>
@@ -52,7 +51,8 @@ const Contact: React.FC = () => {
                     Быстрый старт
                   </h4>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Помощь в планировании и запуске вашего проекта в кратчайшие сроки
+                    Помощь в планировании и запуске вашего проекта в кратчайшие
+                    сроки
                   </p>
                 </div>
               </div>
@@ -66,18 +66,19 @@ const Contact: React.FC = () => {
                     Инновационные решения
                   </h4>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Современные технологии и лучшие практики разработки для вашего проекта
+                    Современные технологии и лучшие практики разработки для
+                    вашего проекта
                   </p>
                 </div>
               </div>
 
-              <button
-                onClick={() => setIsChatOpen(true)}
-                className="w-full px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
-              >
-                <i className="fas fa-comments text-xl"></i>
-                <span>Начать консультацию</span>
-              </button>
+              <div className="text-center p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl">
+                <i className="fas fa-info-circle text-indigo-600 text-2xl mb-2"></i>
+                <p className="text-gray-700 dark:text-gray-300 text-sm">
+                  Чат поддержки доступен через плавающую кнопку в правом нижнем
+                  углу экрана
+                </p>
+              </div>
             </div>
           </div>
 
@@ -188,9 +189,6 @@ const Contact: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Компонент чата с пропсом для управления видимостью */}
-      <Chat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </section>
   );
 };

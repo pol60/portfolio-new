@@ -19,7 +19,7 @@ const cloudflareBackendUrl = process.env.CLOUDFLARE_BACKEND_URL;
 
 if (!token || !adminChatId) {
   console.error(
-    "Ошибка: Не указан TELEGRAM_BOT_TOKEN или TELEGRAM_ADMIN_CHAT_ID в .env"
+    "Ошибка: Не указан TELEGRAM_BOT_TOKEN или TELEGRAM_ADMIN_CHAT_ID в .env",
   );
   process.exit(1);
 }
@@ -32,7 +32,7 @@ if (!isProduction) {
   const allowedOrigins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    cloudflareFrontendUrl
+    cloudflareFrontendUrl,
   ].filter((origin): origin is string => Boolean(origin));
 
   console.log("Разрешенные origins для CORS:", allowedOrigins);
@@ -43,7 +43,7 @@ if (!isProduction) {
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
-    })
+    }),
   );
 } else if (productionDomain) {
   app.use(
@@ -52,7 +52,7 @@ if (!isProduction) {
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
-    })
+    }),
   );
 }
 
@@ -97,6 +97,8 @@ interface UserData {
   messages: Message[]; // вся история (включая фото/файлы)
   pendingAdminMessages: Message[]; // админские сообщения, если клиент оффлайн
   files: Map<string, StoredFile>; // ключ — internal fileId, значение = buffer+mime+filename
+  hasLeftSite: boolean; // флаг того, что пользователь покинул сайт
+  lastSeenTimestamp: number; // время последней активности
 }
 
 interface ClientState {
@@ -141,7 +143,7 @@ const wss = new WebSocketServer({
       const allowedOrigins = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        cloudflareFrontendUrl
+        cloudflareFrontendUrl,
       ].filter((origin): origin is string => Boolean(origin));
 
       console.log("Allowed WebSocket origins:", allowedOrigins);
@@ -172,21 +174,26 @@ wss.on("connection", (ws: WebSocket, req: http.IncomingMessage) => {
   const url = new URL(req.url || "", `http://${req.headers.host}`);
   const userId = url.searchParams.get("userId") || uuidv4();
 
-  console.log(`Новый WebSocket: userId = ${userId}`);
+  console.log(`WebSocket подключение: userId = ${userId}`);
 
   // Проверяем, существует ли уже UserData для этого userId
   const alreadyHasUserData = usersStorage.has(userId);
   // Ищем «живое» соединение в clients (если старое соединение ещё не удалено)
   const existingClientState = clients.get(userId);
 
+  // Проверяем, это первое подключение пользователя к сайту или переподключение
+  const isFirstSiteVisit = !alreadyHasUserData;
+
   // Если была предыдущая сессия для этого userId, отменяем её «таймер отключения»
   if (existingClientState?.disconnectTimeout) {
     clearTimeout(existingClientState.disconnectTimeout);
+    console.log(`Отменён таймер отключения для userId = ${userId}`);
   }
 
-  // Если уже есть активное соединение, закрываем старое ws
+  // Если уже есть активное соединение, аккуратно закрываем старое ws
   if (existingClientState) {
     if (existingClientState.ws.readyState === WebSocket.OPEN) {
+      console.log(`Закрываем старое соединение для userId = ${userId}`);
       existingClientState.ws.close(1000, "New connection");
     }
     clients.delete(userId);
@@ -202,9 +209,18 @@ wss.on("connection", (ws: WebSocket, req: http.IncomingMessage) => {
       messages: [],
       pendingAdminMessages: [],
       files: new Map<string, StoredFile>(),
+      hasLeftSite: false,
+      lastSeenTimestamp: Date.now(),
     };
     usersStorage.set(userId, userData);
   }
+
+  // Проверяем, возвращается ли пользователь после покидания сайта
+  const isReturningUser = userData.hasLeftSite && alreadyHasUserData;
+
+  // Обновляем статус пользователя
+  userData.hasLeftSite = false;
+  userData.lastSeenTimestamp = Date.now();
 
   // Сохраняем новое состояние клиента
   const clientState: ClientState = {
@@ -216,38 +232,81 @@ wss.on("connection", (ws: WebSocket, req: http.IncomingMessage) => {
   };
   clients.set(userId, clientState);
 
-  // 1) Отправляем историю + pendingAdminMessages
+  // 1) Отправляем историю + количество непрочитанных сообщений
+  const unreadCount = userData.pendingAdminMessages.length;
   ws.send(
     JSON.stringify({
       type: "init",
       history: userData.messages,
-      //pending: userData.pendingAdminMessages,
-    })
+      // pending: userData.pendingAdminMessages, // больше не отправляем pending отдельно
+      unreadCount: unreadCount,
+    }),
   );
 
-  // 2) Отправляем старые админские сообщения, которые ещё не были доставлены
-  userData.pendingAdminMessages.forEach((msg) => {
+  // 2) Больше НЕ отправляем pendingAdminMessages отдельными admin_message!
+  // userData.pendingAdminMessages.forEach((msg) => {
+  //   ws.send(
+  //     JSON.stringify({
+  //       action: "admin_message",
+  //       contentType: msg.type,
+  //       id: msg.id,
+  //       text: msg.text,
+  //       fileId: msg.fileId,
+  //       timestamp: msg.timestamp,
+  //       isRead: false, // Оставляем как непрочитанное для уведомления
+  //       fromUser: false,
+  //     }),
+  //   );
+  // });
+  // НЕ очищаем pendingAdminMessages сразу - они будут очищены при markAsRead
+
+  // 3) Логика для нового пользователя vs переподключения vs возврата
+  if (isFirstSiteVisit) {
+    console.log(`Первый вход на сайт: userId = ${userId}`);
+
+    // Новый пользователь - отправляем приветственное сообщение
+    const welcomeMessage: Message = {
+      id: uuidv4(),
+      text: "Привет! 👋 Я готов помочь вам с вашим проектом. Расскажите, какую идею вы хотите реализовать?",
+      type: "text",
+      timestamp: Date.now(),
+      isRead: true, // Сразу помечаем как прочитанное!
+      fromUser: false,
+    };
+    userData.messages.push(welcomeMessage);
+
+    // Отправляем приветственное сообщение клиенту
     ws.send(
       JSON.stringify({
-        action: "admin_message",
-        contentType: msg.type,
-        id: msg.id,
-        text: msg.text,
-        fileId: msg.fileId,
-        timestamp: msg.timestamp,
-        isRead: msg.isRead,
-        fromUser: false,
-      })
+        action: "welcome_message",
+        id: welcomeMessage.id,
+        text: welcomeMessage.text,
+        timestamp: welcomeMessage.timestamp,
+        isRead: true, // Сразу помечаем как прочитанное!
+      }),
     );
-    msg.isRead = true;
-  });
-  userData.pendingAdminMessages = [];
 
-  // 3) Уведомляем администратора, что пользователь зашёл (новый или вернувшийся)
-  const greetingText = alreadyHasUserData
-    ? `🟡 Пользователь вернулся в чат. ID: ${userId}`
-    : `🟢 Новый пользователь подключился к чату. ID: ${userId}`;
-  bot.sendMessage(adminChatId!, greetingText).catch(console.error);
+    // Уведомляем администратора только при первом входе
+    bot
+      .sendMessage(
+        adminChatId!,
+        `🟢 Новый пользователь зашёл на сайт. ID: ${userId}`,
+      )
+      .catch(console.error);
+  } else if (isReturningUser) {
+    console.log(`Пользователь вернулся на сайт: userId = ${userId}`);
+
+    // Уведомляем администратора о возврате
+    bot
+      .sendMessage(
+        adminChatId!,
+        `🟡 Пользователь вернулся на сайт. ID: ${userId}`,
+      )
+      .catch(console.error);
+  } else {
+    console.log(`Переподключение WebSocket: userId = ${userId}`);
+    // При обычном переподключении WebSocket не отправляем никаких уведомлений
+  }
 
   // 4) Пингаем клиента каждые 30 сек, чтобы отследить «мертвые» коннекты
   const pingInterval = setInterval(() => {
@@ -289,7 +348,7 @@ wss.on("connection", (ws: WebSocket, req: http.IncomingMessage) => {
         bot
           .sendMessage(
             adminChatId!,
-            `🔄 Пользователь изменил тему на: ${data.topic}\nID: ${userId}`
+            `🔄 Пользователь изменил тему на: ${data.topic}\nID: ${userId}`,
           )
           .catch(console.error);
         return;
@@ -298,13 +357,54 @@ wss.on("connection", (ws: WebSocket, req: http.IncomingMessage) => {
       // --- Обработка «прочитано» ---
       if (data.type === "read") {
         userData?.messages.forEach((m) => (m.isRead = true));
+        // Очищаем pending сообщения при прочтении
+        userData!.pendingAdminMessages = [];
         return;
       }
 
-      // --- Обработка закрытия со стороны клиента ---
-      if (data.type === "close") {
-        clients.delete(userId);
-        ws.close(1000, "ClientRequestedClose");
+      // --- Обработка реального покидания сайта ---
+      if (data.type === "user_leaving_site") {
+        console.log(`Пользователь покидает сайт: userId = ${userId}`);
+
+        // Устанавливаем флаг что пользователь покинул сайт
+        userData!.hasLeftSite = true;
+
+        // Отправляем уведомление администратору
+        bot
+          .sendMessage(
+            adminChatId!,
+            `🔴 Пользователь покинул сайт. ID: ${userId}`,
+          )
+          .catch(console.error);
+        return;
+      }
+
+      // --- Обработка возврата на сайт ---
+      if (data.type === "user_returned_to_site") {
+        console.log(`Пользователь вернулся на сайт: userId = ${userId}`);
+
+        // Сбрасываем флаг покидания сайта
+        userData!.hasLeftSite = false;
+        userData!.lastSeenTimestamp = Date.now();
+
+        // Уведомляем администратора о возврате
+        bot
+          .sendMessage(
+            adminChatId!,
+            `🟡 Пользователь вернулся на сайт. ID: ${userId}`,
+          )
+          .catch(console.error);
+
+        // Больше не отправляем сообщение "Вы готовы продолжить обсуждение вашей идеи?"
+        return;
+      }
+
+      // --- Обработка закрытия чата (НЕ покидания сайта) ---
+      if (data.type === "close_chat") {
+        console.log(
+          `Пользователь закрыл чат (но остался на сайте): userId = ${userId}`,
+        );
+        // НЕ отправляем уведомление о покидании сайта
         return;
       }
 
@@ -328,7 +428,9 @@ wss.on("connection", (ws: WebSocket, req: http.IncomingMessage) => {
           let sentMsg: TelegramBot.Message;
 
           if (mime.startsWith("image/")) {
-            sentMsg = await bot.sendPhoto(adminChatId!, fileBuffer, { caption });
+            sentMsg = await bot.sendPhoto(adminChatId!, fileBuffer, {
+              caption,
+            });
           } else {
             sentMsg = await bot.sendDocument(adminChatId!, fileBuffer, {
               caption,
@@ -355,7 +457,7 @@ wss.on("connection", (ws: WebSocket, req: http.IncomingMessage) => {
               type: "file_ack",
               fileId: data.fileId,
               success: true,
-            })
+            }),
           );
         } catch (err) {
           console.error("Ошибка при обработке data.type='file':", err);
@@ -364,7 +466,7 @@ wss.on("connection", (ws: WebSocket, req: http.IncomingMessage) => {
               type: "file_ack",
               fileId: data.fileId,
               success: false,
-            })
+            }),
           );
         }
         return;
@@ -397,28 +499,17 @@ wss.on("connection", (ws: WebSocket, req: http.IncomingMessage) => {
   // --- Закрытие WebSocket ---
   ws.on("close", (code: number, reason: string) => {
     console.log(
-      `WS закрыт. userId=${userId}, код=${code}, причина='${reason}'`
+      `WS закрыт. userId=${userId}, код=${code}, причина='${reason}'`,
     );
     clearInterval(pingInterval);
 
-    // Откладываем «пинги» на случай, если пользователь быстро перезайдёт
-    const disconnectTimeout = setTimeout(() => {
-      if (clients.get(userId)?.ws === ws) {
-        clients.delete(userId);
-        bot
-          .sendMessage(adminChatId!, `🔴 Пользователь покинул чат. ID: ${userId}`)
-          .catch(console.error);
-      }
-    }, 5000);
-
-    clients.set(userId, {
-      ws,
-      isAlive: true,
-      lastPing: Date.now(),
-      userId,
-      lastMessageTimestamp: Date.now(),
-      disconnectTimeout,
-    });
+    // Просто удаляем клиента из списка активных
+    // Уведомления о покидании сайта отправляются только через события beforeunload/visibilitychange
+    const currentClient = clients.get(userId);
+    if (currentClient?.ws === ws) {
+      clients.delete(userId);
+      console.log(`WebSocket соединение закрыто для userId=${userId}`);
+    }
   });
 
   ws.on("error", (err) => {
@@ -465,7 +556,7 @@ bot.on("message", async (msg: TelegramBot.Message) => {
           timestamp: newMessage.timestamp,
           isRead: true,
           fromUser: false,
-        })
+        }),
       );
       newMessage.isRead = true;
     } else {
@@ -507,7 +598,7 @@ bot.on("message", async (msg: TelegramBot.Message) => {
         isRead: false,
         fromUser: false,
       };
-      // Сохраняем в истории
+      // Сохраняем in истории
       userData.messages.push(newMessage);
 
       if (client?.ws.readyState === WebSocket.OPEN) {
@@ -521,7 +612,7 @@ bot.on("message", async (msg: TelegramBot.Message) => {
             timestamp: newMessage.timestamp,
             isRead: true,
             fromUser: false,
-          })
+          }),
         );
         newMessage.isRead = true;
       } else {
@@ -575,7 +666,7 @@ bot.on("message", async (msg: TelegramBot.Message) => {
             timestamp: newMessage.timestamp,
             isRead: true,
             fromUser: false,
-          })
+          }),
         );
         newMessage.isRead = true;
       } else {
@@ -594,7 +685,7 @@ const fileHandler: RequestHandler = (req, res) => {
   const fileId = req.params.id;
   // Ищем, у какого пользователя хранится файл с этим fileId
   const userData = Array.from(usersStorage.values()).find((u) =>
-    u.messages.some((m) => m.fileId === fileId)
+    u.messages.some((m) => m.fileId === fileId),
   );
 
   if (!userData || !userData.files.has(fileId)) {
@@ -635,5 +726,7 @@ if (isProduction) {
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT} in ${isProduction ? "production" : "development"} mode`);
+  console.log(
+    `Server listening on port ${PORT} in ${isProduction ? "production" : "development"} mode`,
+  );
 });

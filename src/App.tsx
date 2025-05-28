@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import Navbar from "./components/Navbar";
 import MobileMenu from "./components/MobileMenu";
 import ScrollProgress from "./components/ScrollProgress";
+import Chat from "./components/Chat";
+import { useWebSocketConnection } from "./hooks/useWebSocketConnection";
 import "./styles.css";
 
 // Импорт секций
@@ -15,10 +17,14 @@ const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState("home");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Refs для графиков в секции Skills
   const skillChartRef = useRef<HTMLDivElement>(null);
   const experienceChartRef = useRef<HTMLDivElement>(null);
+
+  // WebSocket подключение работает в фоновом режиме
+  const webSocketConnection = useWebSocketConnection();
 
   // Обработчик скролла
   useEffect(() => {
@@ -79,6 +85,14 @@ const App: React.FC = () => {
       />
       <Projects />
       <Contact />
+
+      {/* Глобальный чат с фоновым WebSocket подключением */}
+      <Chat
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        onOpen={() => setIsChatOpen(true)}
+        webSocketConnection={webSocketConnection}
+      />
     </div>
   );
 };
