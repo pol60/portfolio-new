@@ -1,14 +1,15 @@
-import React from 'react';
-import SkillChart from '../components/SkillChart';
-import ExperienceChart from '../components/ExperienceChart';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import SkillChart from "../components/SkillChart";
+import ExperienceChart from "../components/ExperienceChart";
 
 const skills = [
-  { name: 'React', value: 90 },
-  { name: 'TypeScript', value: 85 },
-  { name: 'Node.js', value: 80 },
-  { name: 'Next.js', value: 85 },
-  { name: 'MongoDB', value: 75 },
-  { name: 'PostgreSQL', value: 70 }
+  { name: "React", value: 90 },
+  { name: "TypeScript", value: 85 },
+  { name: "Node.js", value: 80 },
+  { name: "Next.js", value: 85 },
+  { name: "MongoDB", value: 75 },
+  { name: "PostgreSQL", value: 70 },
 ];
 
 interface SkillsProps {
@@ -16,7 +17,11 @@ interface SkillsProps {
   experienceChartRef: React.RefObject<HTMLDivElement>;
 }
 
-const Skills: React.FC<SkillsProps> = ({ skillChartRef, experienceChartRef }) => {
+const Skills: React.FC<SkillsProps> = ({
+  skillChartRef,
+  experienceChartRef,
+}) => {
+  const { t } = useTranslation();
   return (
     <section
       id="skills"
@@ -26,20 +31,19 @@ const Skills: React.FC<SkillsProps> = ({ skillChartRef, experienceChartRef }) =>
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-              Мои навыки
+              {t("skills.title")}
             </span>
           </h2>
           <div className="w-20 h-1 bg-indigo-600 mx-auto rounded-full"></div>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mt-4">
-            Я постоянно совершенствую свои навыки и изучаю новые технологии,
-            чтобы создавать современные и эффективные решения.
+            {t("skills.description")}
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12">
           <div>
             <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
-              Технический стек
+              {t("skills.tech_stack")}
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -50,21 +54,25 @@ const Skills: React.FC<SkillsProps> = ({ skillChartRef, experienceChartRef }) =>
                     <i className="fas fa-code text-indigo-600"></i>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                    Frontend
+                    {t("skills.frontend")}
                   </h4>
                 </div>
                 <ul className="space-y-2 text-gray-600 dark:text-gray-300">
                   <li className="flex items-center">
-                    <i className="fab fa-react text-blue-500 mr-2"></i> React / Next.js
+                    <i className="fab fa-react text-blue-500 mr-2"></i> React /
+                    Next.js
                   </li>
                   <li className="flex items-center">
-                    <i className="fab fa-js text-yellow-500 mr-2"></i> JavaScript / TypeScript
+                    <i className="fab fa-js text-yellow-500 mr-2"></i>{" "}
+                    JavaScript / TypeScript
                   </li>
                   <li className="flex items-center">
-                    <i className="fab fa-html5 text-orange-500 mr-2"></i> HTML5 / CSS3
+                    <i className="fab fa-html5 text-orange-500 mr-2"></i> HTML5
+                    / CSS3
                   </li>
                   <li className="flex items-center">
-                    <i className="fab fa-sass text-pink-500 mr-2"></i> Sass / Tailwind CSS
+                    <i className="fab fa-sass text-pink-500 mr-2"></i> Sass /
+                    Tailwind CSS
                   </li>
                 </ul>
               </div>
@@ -76,18 +84,20 @@ const Skills: React.FC<SkillsProps> = ({ skillChartRef, experienceChartRef }) =>
                     <i className="fas fa-server text-green-600"></i>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                    Backend
+                    {t("skills.backend")}
                   </h4>
                 </div>
                 <ul className="space-y-2 text-gray-600 dark:text-gray-300">
                   <li className="flex items-center">
-                    <i className="fab fa-node-js text-green-500 mr-2"></i> Node.js / Express
+                    <i className="fab fa-node-js text-green-500 mr-2"></i>{" "}
+                    Node.js / Express
                   </li>
                   <li className="flex items-center">
                     <i className="fab fa-python text-blue-500 mr-2"></i> Python
                   </li>
                   <li className="flex items-center">
-                    <i className="fas fa-cogs text-gray-500 mr-2"></i> RESTful API
+                    <i className="fas fa-cogs text-gray-500 mr-2"></i> RESTful
+                    API
                   </li>
                   <li className="flex items-center">
                     <i className="fas fa-bolt text-yellow-500 mr-2"></i> GraphQL
@@ -102,21 +112,25 @@ const Skills: React.FC<SkillsProps> = ({ skillChartRef, experienceChartRef }) =>
                     <i className="fas fa-database text-blue-600"></i>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                    Базы данных
+                    {t("skills.databases")}
                   </h4>
                 </div>
                 <ul className="space-y-2 text-gray-600 dark:text-gray-300">
                   <li className="flex items-center">
-                    <i className="fas fa-leaf text-green-500 mr-2 w-5 text-center"></i> MongoDB
+                    <i className="fas fa-leaf text-green-500 mr-2 w-5 text-center"></i>{" "}
+                    MongoDB
                   </li>
                   <li className="flex items-center">
-                    <i className="fas fa-database text-blue-500 mr-2 w-5 text-center"></i> PostgreSQL
+                    <i className="fas fa-database text-blue-500 mr-2 w-5 text-center"></i>{" "}
+                    PostgreSQL
                   </li>
                   <li className="flex items-center">
-                    <i className="fas fa-cloud text-indigo-500 mr-2 w-5 text-center"></i> Supabase
+                    <i className="fas fa-cloud text-indigo-500 mr-2 w-5 text-center"></i>{" "}
+                    Supabase
                   </li>
                   <li className="flex items-center">
-                    <i className="fas fa-bolt text-purple-500 mr-2 w-5 text-center"></i> Neon
+                    <i className="fas fa-bolt text-purple-500 mr-2 w-5 text-center"></i>{" "}
+                    Neon
                   </li>
                 </ul>
               </div>
@@ -128,21 +142,24 @@ const Skills: React.FC<SkillsProps> = ({ skillChartRef, experienceChartRef }) =>
                     <i className="fas fa-tools text-purple-600"></i>
                   </div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                    Инструменты
+                    {t("skills.tools")}
                   </h4>
                 </div>
                 <ul className="space-y-2 text-gray-600 dark:text-gray-300">
                   <li className="flex items-center">
-                    <i className="fab fa-git-alt text-orange-500 mr-2"></i> Git / GitHub
+                    <i className="fab fa-git-alt text-orange-500 mr-2"></i> Git
+                    / GitHub
                   </li>
                   <li className="flex items-center">
                     <i className="fab fa-docker text-blue-500 mr-2"></i> Docker
                   </li>
                   <li className="flex items-center">
-                    <i className="fas fa-cloud text-blue-400 mr-2"></i> AWS / Vercel
+                    <i className="fas fa-cloud text-blue-400 mr-2"></i> AWS /
+                    Vercel
                   </li>
                   <li className="flex items-center">
-                    <i className="fas fa-vial text-red-500 mr-2"></i> Jest / Testing Library
+                    <i className="fas fa-vial text-red-500 mr-2"></i> Jest /
+                    Testing Library
                   </li>
                 </ul>
               </div>
@@ -152,7 +169,7 @@ const Skills: React.FC<SkillsProps> = ({ skillChartRef, experienceChartRef }) =>
           <div className="space-y-12">
             <div>
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white ">
-                Уровень навыков
+                {t("skills.level")}
               </h3>
               {/* Используем импортированный компонент */}
               <SkillChart ref={skillChartRef} skills={skills} />
@@ -160,7 +177,7 @@ const Skills: React.FC<SkillsProps> = ({ skillChartRef, experienceChartRef }) =>
 
             <div className="relative -top-16">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white -mb-6">
-                Опыт работы
+                {t("skills.experience")}
               </h3>
               <ExperienceChart ref={experienceChartRef} />
             </div>

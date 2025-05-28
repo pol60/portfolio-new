@@ -1,8 +1,10 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import ProjectCard from "../components/ProjectCard";
 import { useProjects } from "../hooks/useProjects";
 
 const Projects: React.FC = () => {
+  const { t } = useTranslation();
   const { projects, loading, error } = useProjects();
 
   return (
@@ -11,13 +13,12 @@ const Projects: React.FC = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-              Мои проекты
+              {t("projects.title")}
             </span>
           </h2>
           <div className="w-20 h-1 bg-indigo-600 mx-auto rounded-full"></div>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mt-4">
-            Избранные проекты, демонстрирующие мои навыки и опыт в разработке
-            полнофункциональных веб-приложений.
+            {t("projects.description")}
           </p>
         </div>
 
@@ -32,7 +33,9 @@ const Projects: React.FC = () => {
             <div className="text-red-500 mb-4">
               <i className="fas fa-exclamation-triangle text-3xl"></i>
             </div>
-            <p className="text-gray-600 dark:text-gray-300">{error}</p>
+            <p className="text-gray-600 dark:text-gray-300">
+              {t("projects.loading_error")}
+            </p>
           </div>
         )}
 
@@ -46,7 +49,7 @@ const Projects: React.FC = () => {
 
         <div className="text-center mt-12">
           <button className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-indigo-500/50 !rounded-button whitespace-nowrap cursor-pointer">
-            Смотреть все проекты <i className="fas fa-arrow-right ml-2"></i>
+            {t("projects.view_all")} <i className="fas fa-arrow-right ml-2"></i>
           </button>
         </div>
       </div>

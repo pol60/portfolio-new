@@ -1,0 +1,89 @@
+{
+  "nav": {
+    "home": "Startseite",
+    "about": "Über mich",
+    "skills": "Fähigkeiten",
+    "projects": "Projekte",
+    "contact": "Kontakt",
+    "portfolio": "Portfolio",
+    "menu": "Menü"
+  },
+  "home": {
+    "greeting": "Hallo, ich bin",
+    "title": "Full Stack Entwickler",
+    "description": "Ich erstelle moderne Webanwendungen mit modernsten Technologien und bewährten Entwicklungspraktiken.",
+    "projects_btn": "Meine Projekte",
+    "contact_btn": "Kontaktieren Sie mich"
+  },
+  "about": {
+    "title": "Über mich",
+    "subtitle": "Full Stack Entwickler mit Leidenschaft für innovative Lösungen",
+    "description1": "Ich spezialisiere mich auf die Entwicklung moderner Webanwendungen mit modernsten Technologien. Meine Erfahrung umfasst den gesamten Entwicklungsstack: von der Erstellung interaktiver Benutzeroberflächen bis hin zur Gestaltung skalierbarer Serverlösungen und der Arbeit mit Datenbanken.",
+    "description2": "In meiner Arbeit halte ich mich an die Prinzipien sauberen Codes, achte auf Details und strebe immer nach der optimalen Balance zwischen Funktionalität, Leistung und Benutzererfahrung.",
+    "directions": "Hauptbereiche:",
+    "web_dev": "Webentwicklung",
+    "responsive": "Responsive Design",
+    "databases": "Datenbanken",
+    "backend": "Backend-Entwicklung",
+    "years_exp": "Jahre Erfahrung",
+    "projects_count": "Projekte"
+  },
+  "skills": {
+    "title": "Meine Fähigkeiten",
+    "description": "Ich verbessere ständig meine Fähigkeiten und lerne neue Technologien, um moderne und effiziente Lösungen zu schaffen.",
+    "tech_stack": "Technologie-Stack",
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "databases": "Datenbanken",
+    "tools": "Werkzeuge",
+    "level": "Fähigkeitslevel",
+    "experience": "Berufserfahrung"
+  },
+  "projects": {
+    "title": "Meine Projekte",
+    "description": "Ausgewählte Projekte, die meine Fähigkeiten und Erfahrung in der Entwicklung vollwertiger Webanwendungen zeigen.",
+    "demo": "Demo",
+    "github": "GitHub",
+    "view_all": "Alle Projekte anzeigen",
+    "loading_error": "Projekte konnten nicht geladen werden. Bitte überprüfen Sie die Datei projects.json."
+  },
+  "contact": {
+    "title": "Entwicklungsberatung",
+    "description": "Benötigen Sie Hilfe bei der Anwendungsentwicklung? Ich helfe Ihnen mit technischer Beratung und Projektumsetzung.",
+    "what_you_get": "Was Sie bekommen",
+    "tech_consultation": "Technische Beratung",
+    "tech_consultation_desc": "Professionelle Analyse Ihrer Idee und Empfehlungen zur technischen Umsetzung",
+    "quick_start": "Schneller Start",
+    "quick_start_desc": "Hilfe bei der Planung und dem Start Ihres Projekts in kürzester Zeit",
+    "innovative_solutions": "Innovative Lösungen",
+    "innovative_solutions_desc": "Moderne Technologien und bewährte Entwicklungspraktiken für Ihr Projekt",
+    "chat_info": "Der Support-Chat ist über die schwebende Schaltfläche in der unteren rechten Ecke des Bildschirms verfügbar",
+    "contact_info": "Kontaktinformationen",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "location": "Standort",
+    "social": "Soziale Medien"
+  },
+  "chat": {
+    "support": "Support-Chat",
+    "topic": "Thema",
+    "no_topic": "Kein Thema",
+    "change_topic": "ändern",
+    "lets_meet": "Lassen Sie uns kennenlernen!",
+    "form_description": "Um mit dem Chatten zu beginnen, füllen Sie bitte das untenstehende Formular aus",
+    "your_name": "Ihr Name",
+    "enter_name": "Geben Sie Ihren Namen ein",
+    "topic_label": "Thema",
+    "topic_placeholder": "Worüber möchten Sie sprechen?",
+    "cancel": "Abbrechen",
+    "continue": "Fortfahren",
+    "enter_message": "Nachricht eingeben...",
+    "fill_form": "Klicken Sie, um das Formular auszufüllen...",
+    "close": "Schließen",
+    "change_topic_title": "Thema ändern",
+    "change_topic_desc": "Erzählen Sie uns, worüber Sie sprechen möchten",
+    "new_topic": "Neues Thema",
+    "save": "Speichern",
+    "support_label": "Support-Chat öffnen"
+  }
+}

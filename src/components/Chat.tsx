@@ -5,6 +5,7 @@ import {
   FormState,
   FileData,
 } from "../hooks/useWebSocketConnection";
+import { useTranslation } from "react-i18next";
 import "./Chat.css";
 
 interface ChatProps {
@@ -36,6 +37,8 @@ const Chat: React.FC<ChatProps> = ({
     updateTopic,
     setForm,
   } = webSocketConnection;
+
+  const { t } = useTranslation();
 
   const [newMessage, setNewMessage] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -245,7 +248,7 @@ const Chat: React.FC<ChatProps> = ({
           style={{
             display: showButton ? "flex" : "none",
           }}
-          aria-label="Открыть чат поддержки"
+          aria-label={t("chat.support_label")}
         >
           <div className="relative w-7 h-7 flex items-center justify-center">
             {icons.map((icon, idx) => (
@@ -300,19 +303,20 @@ const Chat: React.FC<ChatProps> = ({
                   }}
                 />
                 <div>
-                  <h3 className="font-semibold text-lg">Чат поддержки</h3>
+                  <h3 className="font-semibold text-lg">{t("chat.support")}</h3>
                   <button
                     onClick={() => setShowTopicForm(true)}
                     className="text-sm opacity-80 hover:opacity-100 transition-opacity duration-200 underline decoration-dotted"
                   >
-                    Тема: {form.topic || "Без темы"} (изменить)
+                    {t("chat.topic")}: {form.topic || t("chat.no_topic")} (
+                    {t("chat.change_topic")})
                   </button>
                 </div>
               </div>
               <button
                 onClick={handleClose}
                 className="text-white hover:text-gray-200 transition-colors duration-200 p-2 rounded-full hover:bg-white/20"
-                aria-label="Закрыть чат"
+                aria-label={t("chat.close")}
               >
                 <i className="fas fa-times text-lg"></i>
               </button>
@@ -327,10 +331,10 @@ const Chat: React.FC<ChatProps> = ({
                       <i className="fas fa-user text-white text-2xl"></i>
                     </div>
                     <h4 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                      Давайте знакомиться!
+                      {t("chat.lets_meet")}
                     </h4>
                     <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
-                      Чтобы начать общение, заполните форму ниже
+                      {t("chat.form_description")}
                     </p>
                   </div>
 
@@ -340,7 +344,8 @@ const Chat: React.FC<ChatProps> = ({
                         htmlFor="chat-name"
                         className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                       >
-                        <i className="fas fa-user mr-2"></i>Ваше имя
+                        <i className="fas fa-user mr-2"></i>
+                        {t("chat.your_name")}
                       </label>
                       <input
                         id="chat-name"
@@ -351,7 +356,7 @@ const Chat: React.FC<ChatProps> = ({
                         }
                         className="chat-input-field no-zoom w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:ring-opacity-50 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
                         style={{ fontSize: "16px" }}
-                        placeholder="Введите ваше имя"
+                        placeholder={t("chat.enter_name")}
                         required
                       />
                     </div>
@@ -360,8 +365,8 @@ const Chat: React.FC<ChatProps> = ({
                         htmlFor="chat-topic"
                         className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                       >
-                        <i className="fas fa-comment-dots mr-2"></i>Тема
-                        обращения
+                        <i className="fas fa-comment-dots mr-2"></i>
+                        {t("chat.topic_label")}
                       </label>
                       <input
                         id="chat-topic"
@@ -372,7 +377,7 @@ const Chat: React.FC<ChatProps> = ({
                         }
                         className="chat-input-field no-zoom w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:ring-opacity-50 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
                         style={{ fontSize: "16px" }}
-                        placeholder="О чём хотите поговорить?"
+                        placeholder={t("chat.topic_placeholder")}
                         required
                       />
                     </div>
@@ -387,14 +392,14 @@ const Chat: React.FC<ChatProps> = ({
                       }}
                       className="flex-1 px-6 py-4 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
                     >
-                      Отмена
+                      {t("chat.cancel")}
                     </button>
                     <button
                       type="submit"
                       className="flex-1 px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                     >
                       <i className="fas fa-paper-plane mr-2"></i>
-                      Продолжить
+                      {t("chat.continue")}
                     </button>
                   </div>
                 </form>
@@ -513,8 +518,8 @@ const Chat: React.FC<ChatProps> = ({
                       style={{ fontSize: "16px" }}
                       placeholder={
                         isFormFilled
-                          ? "Введите сообщение..."
-                          : "Нажмите для заполнения формы..."
+                          ? t("chat.enter_message")
+                          : t("chat.fill_form")
                       }
                       readOnly={!isFormFilled}
                     />
@@ -559,7 +564,7 @@ const Chat: React.FC<ChatProps> = ({
                     className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
                   >
                     <i className="fas fa-times mr-2"></i>
-                    Закрыть
+                    {t("chat.close")}
                   </button>
                 </div>
               </div>
@@ -575,10 +580,10 @@ const Chat: React.FC<ChatProps> = ({
                     <i className="fas fa-edit text-white text-2xl"></i>
                   </div>
                   <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                    Изменить тему
+                    {t("chat.change_topic_title")}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
-                    Расскажите, о чём хотите поговорить
+                    {t("chat.change_topic_desc")}
                   </p>
                 </div>
 
@@ -590,7 +595,7 @@ const Chat: React.FC<ChatProps> = ({
                   }
                   className="chat-input-field no-zoom w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:ring-opacity-50 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white mb-6 transition-all duration-200"
                   style={{ fontSize: "16px" }}
-                  placeholder="Новая тема обращения"
+                  placeholder={t("chat.new_topic")}
                 />
 
                 <div className="flex justify-end space-x-3">
@@ -599,7 +604,7 @@ const Chat: React.FC<ChatProps> = ({
                     className="px-6 py-3 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-500 transition-all duration-200 transform hover:scale-105"
                   >
                     <i className="fas fa-times mr-2"></i>
-                    Отмена
+                    {t("chat.cancel")}
                   </button>
                   <button
                     onClick={() => {
@@ -609,7 +614,7 @@ const Chat: React.FC<ChatProps> = ({
                     className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
                   >
                     <i className="fas fa-save mr-2"></i>
-                    Сохранить
+                    {t("chat.save")}
                   </button>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 // src/router.tsx
 import React from "react";
-import { createBrowserRouter} from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import Home from "./sections/Home";
 import About from "./sections/About";
@@ -9,14 +9,14 @@ import About from "./sections/About";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,   // Этот компонент должен содержать <Outlet />, куда будут рендериться дочерние маршруты
+    element: <App />, // Этот компонент должен содержать <Outlet />, куда будут рендериться дочерние маршруты
     children: [
       {
-        index: true,    // при заходе на "/", рендерится Home
+        index: true, // при заходе на "/", рендерится Home
         element: <Home />,
       },
       {
-        path: "about",  // при заходе на "/about", рендерится About
+        path: "about", // при заходе на "/about", рендерится About
         element: <About />,
       },
     ],

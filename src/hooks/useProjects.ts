@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Project } from "../components/ProjectCard";
+import { useTranslation } from "react-i18next";
 
 /**
  * Хук для загрузки проектов из JSON файла
@@ -9,6 +10,8 @@ export const useProjects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { i18n, t } = useTranslation();
+  const language = i18n.language;
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -21,13 +24,13 @@ export const useProjects = () => {
         }
 
         const data = await response.json();
-        setProjects(data);
+        // Get projects for current language, fallback to 'ru' if language not found
+        const languageProjects = data[language] || data["ru"] || [];
+        setProjects(languageProjects);
         setError(null);
       } catch (err) {
         console.error("Ошибка при загрузке проектов:", err);
-        setError(
-          "Не удалось загрузить проекты. Пожалуйста, проверьте файл projects.json.",
-        );
+        setError(t("projects.loading_error"));
         setProjects([]);
       } finally {
         setLoading(false);
@@ -35,7 +38,7 @@ export const useProjects = () => {
     };
 
     fetchProjects();
-  }, []);
+  }, [language, t]);
 
   return { projects, loading, error };
 };

@@ -1,0 +1,89 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "skills": "Skills",
+    "projects": "Projects",
+    "contact": "Contact",
+    "portfolio": "Portfolio",
+    "menu": "Menu"
+  },
+  "home": {
+    "greeting": "Hi, I'm",
+    "title": "Full Stack Developer",
+    "description": "I create modern web applications using cutting-edge technologies and development best practices.",
+    "projects_btn": "My Projects",
+    "contact_btn": "Contact Me"
+  },
+  "about": {
+    "title": "About Me",
+    "subtitle": "Full Stack Developer with a passion for creating innovative solutions",
+    "description1": "I specialize in developing modern web applications using cutting-edge technologies. My experience covers the entire development stack: from creating interactive user interfaces to designing scalable server solutions and working with databases.",
+    "description2": "In my work, I adhere to clean code principles, pay attention to details, and always strive for the optimal balance between functionality, performance, and user experience.",
+    "directions": "Main Areas:",
+    "web_dev": "Web Development",
+    "responsive": "Responsive Design",
+    "databases": "Databases",
+    "backend": "Backend Development",
+    "years_exp": "Years Experience",
+    "projects_count": "Projects"
+  },
+  "skills": {
+    "title": "My Skills",
+    "description": "I constantly improve my skills and learn new technologies to create modern and efficient solutions.",
+    "tech_stack": "Technology Stack",
+    "frontend": "Frontend",
+    "backend": "Backend",
+    "databases": "Databases",
+    "tools": "Tools",
+    "level": "Skill Level",
+    "experience": "Work Experience"
+  },
+  "projects": {
+    "title": "My Projects",
+    "description": "Featured projects showcasing my skills and experience in developing full-featured web applications.",
+    "demo": "Demo",
+    "github": "GitHub",
+    "view_all": "View All Projects",
+    "loading_error": "Failed to load projects. Please check the projects.json file."
+  },
+  "contact": {
+    "title": "Development Consultation",
+    "description": "Need help with application development? I'll help you with technical consultation and project implementation.",
+    "what_you_get": "What You Get",
+    "tech_consultation": "Technical Consultation",
+    "tech_consultation_desc": "Professional analysis of your idea and technical implementation recommendations",
+    "quick_start": "Quick Start",
+    "quick_start_desc": "Help with planning and launching your project in the shortest time",
+    "innovative_solutions": "Innovative Solutions",
+    "innovative_solutions_desc": "Modern technologies and development best practices for your project",
+    "chat_info": "Support chat is available via the floating button in the bottom right corner of the screen",
+    "contact_info": "Contact Information",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "social": "Social Media"
+  },
+  "chat": {
+    "support": "Support Chat",
+    "topic": "Topic",
+    "no_topic": "No Topic",
+    "change_topic": "change",
+    "lets_meet": "Let's get acquainted!",
+    "form_description": "To start chatting, please fill out the form below",
+    "your_name": "Your Name",
+    "enter_name": "Enter your name",
+    "topic_label": "Topic",
+    "topic_placeholder": "What would you like to talk about?",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "enter_message": "Enter message...",
+    "fill_form": "Click to fill out the form...",
+    "close": "Close",
+    "change_topic_title": "Change Topic",
+    "change_topic_desc": "Tell us what you'd like to talk about",
+    "new_topic": "New topic",
+    "save": "Save",
+    "support_label": "Open support chat"
+  }
+}

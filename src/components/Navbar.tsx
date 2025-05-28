@@ -1,4 +1,6 @@
-import React from 'react';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "./LanguageSelector";
 
 interface NavbarProps {
   activeSection: string;
@@ -11,17 +13,27 @@ const Navbar: React.FC<NavbarProps> = ({
   activeSection,
   scrollToSection,
   isMenuOpen,
-  setIsMenuOpen
+  setIsMenuOpen,
 }) => {
+  const { t } = useTranslation();
+
   return (
-    <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${activeSection !== 'home' ? 'bg-gray-900/80 backdrop-blur-md shadow-md' : 'bg-transparent'}`}>
+    <header
+      className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${activeSection !== "home" ? "bg-gray-900/80 backdrop-blur-md shadow-md" : "bg-transparent"}`}
+    >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#home" className="text-2xl font-bold text-indigo-600 cursor-pointer" onClick={() => scrollToSection('home')}>
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Портфолио</span>
+        <a
+          href="#home"
+          className="text-2xl font-bold text-indigo-600 cursor-pointer"
+          onClick={() => scrollToSection("home")}
+        >
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+            {t("nav.portfolio")}
+          </span>
         </a>
-        
+
         <nav className="hidden md:flex items-center space-x-8">
-          {['home', 'about', 'skills', 'projects', 'contact'].map((section) => (
+          {["home", "about", "skills", "projects", "contact"].map((section) => (
             <a
               key={section}
               href={`#${section}`}
@@ -30,26 +42,25 @@ const Navbar: React.FC<NavbarProps> = ({
                 scrollToSection(section);
               }}
               className={`relative py-2 text-sm uppercase tracking-wider font-medium cursor-pointer transition-colors ${
-                activeSection === section ? 'text-indigo-600' : 'text-gray-300 hover:text-indigo-400'
+                activeSection === section
+                  ? "text-indigo-600"
+                  : "text-gray-300 hover:text-indigo-400"
               }`}
             >
-              {section === 'home' && 'Главная'}
-              {section === 'about' && 'Обо мне'}
-              {section === 'skills' && 'Навыки'}
-              {section === 'projects' && 'Проекты'}
-              {section === 'contact' && 'Контакты'}
+              {t(`nav.${section}`)}
               {activeSection === section && (
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 transform origin-left transition-transform duration-300"></span>
               )}
             </a>
           ))}
         </nav>
-        
+
         <div className="flex items-center space-x-4">
-          <button 
+          <LanguageSelector />
+          <button
             className="md:hidden p-2 rounded-full hover:bg-gray-700 transition-colors cursor-pointer"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Меню"
+            aria-label={t("nav.menu")}
           >
             {isMenuOpen ? (
               <i className="fas fa-times text-indigo-600"></i>
@@ -63,4 +74,4 @@ const Navbar: React.FC<NavbarProps> = ({
   );
 };
 
-export default Navbar; 
+export default Navbar;

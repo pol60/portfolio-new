@@ -1,6 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const Contact: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <section
       id="contact"
@@ -10,20 +13,19 @@ const Contact: React.FC = () => {
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-              Консультация по разработке
+              {t("contact.title")}
             </span>
           </h2>
           <div className="w-20 h-1 bg-indigo-600 mx-auto rounded-full"></div>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mt-4">
-            Нужна помощь в разработке приложения? Я помогу вам с технической
-            консультацией и реализацией вашего проекта.
+            {t("contact.description")}
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12">
           <div className="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8">
             <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
-              Что вы получите
+              {t("contact.what_you_get")}
             </h3>
 
             <div className="space-y-6">
@@ -33,11 +35,10 @@ const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                    Техническая консультация
+                    {t("contact.tech_consultation")}
                   </h4>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Профессиональный анализ вашей идеи и рекомендации по
-                    технической реализации
+                    {t("contact.tech_consultation_desc")}
                   </p>
                 </div>
               </div>
@@ -48,11 +49,10 @@ const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                    Быстрый старт
+                    {t("contact.quick_start")}
                   </h4>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Помощь в планировании и запуске вашего проекта в кратчайшие
-                    сроки
+                    {t("contact.quick_start_desc")}
                   </p>
                 </div>
               </div>
@@ -63,11 +63,10 @@ const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                    Инновационные решения
+                    {t("contact.innovative_solutions")}
                   </h4>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Современные технологии и лучшие практики разработки для
-                    вашего проекта
+                    {t("contact.innovative_solutions_desc")}
                   </p>
                 </div>
               </div>
@@ -75,8 +74,7 @@ const Contact: React.FC = () => {
               <div className="text-center p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl">
                 <i className="fas fa-info-circle text-indigo-600 text-2xl mb-2"></i>
                 <p className="text-gray-700 dark:text-gray-300 text-sm">
-                  Чат поддержки доступен через плавающую кнопку в правом нижнем
-                  углу экрана
+                  {t("contact.chat_info")}
                 </p>
               </div>
             </div>
@@ -85,7 +83,7 @@ const Contact: React.FC = () => {
           <div className="space-y-8">
             <div className="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
-                Контактная информация
+                {t("contact.contact_info")}
               </h3>
 
               <div className="space-y-6">
@@ -95,7 +93,7 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                      Email
+                      {t("contact.email")}
                     </h4>
                     <a
                       href="mailto:contact@example.com"
@@ -112,7 +110,7 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                      Телефон
+                      {t("contact.phone")}
                     </h4>
                     <a
                       href="tel:+71234567890"
@@ -129,7 +127,7 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                      Локация
+                      {t("contact.location")}
                     </h4>
                     <p className="text-gray-600 dark:text-gray-300">
                       Worldwide
@@ -141,7 +139,7 @@ const Contact: React.FC = () => {
 
             <div className="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
-                Социальные сети
+                {t("contact.social")}
               </h3>
 
               <div className="grid grid-cols-2 gap-4">
