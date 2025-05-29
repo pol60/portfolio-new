@@ -21,6 +21,7 @@ i18n
   .init({
     resources,
     fallbackLng: "en",
+    lng: localStorage.getItem("i18nextLng") || "en", // всегда английский если нет выбранного
     debug: false,
 
     detection: {
