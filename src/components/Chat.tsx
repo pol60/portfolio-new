@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import {
   useWebSocketConnection,
   Message,
@@ -50,9 +50,12 @@ const Chat: React.FC<ChatProps> = ({
   const [isFormRequired, setIsFormRequired] = useState(false);
   const [chatOpenedOnce, setChatOpenedOnce] = useState(false);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [isTextareaExpanded, setIsTextareaExpanded] = useState(false);
+  const [linesCount, setLinesCount] = useState(1);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Появление кнопки после скролла ниже 80px
   const [showButton, setShowButton] = useState(false);
@@ -245,6 +248,54 @@ const Chat: React.FC<ChatProps> = ({
       }
     }
   }, [externalIsOpen]);
+
+  // Считаем количество строк в textarea (учитываем автоперенос)
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (el) {
+      const lineHeight = parseFloat(getComputedStyle(el).lineHeight || "20");
+      const lines = Math.round(el.scrollHeight / lineHeight);
+      setLinesCount(lines);
+    }
+  }, [newMessage]);
+
+  // Управляем расширением textarea только по количеству строк
+  useEffect(() => {
+    if (linesCount >= 3) {
+      setIsTextareaExpanded(true);
+    } else {
+      setIsTextareaExpanded(false);
+    }
+  }, [linesCount]);
+
+  // Корректно сбрасываем высоту textarea при сжатии
+  useLayoutEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    if (isTextareaExpanded) {
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
+      setTimeout(() => {
+        if (el) {
+          el.style.height = "auto";
+          el.style.height = el.scrollHeight + "px";
+        }
+      }, 0);
+    } else {
+      el.style.height = "";
+    }
+  }, [isTextareaExpanded]);
+
+  // Сброс состояния контейнера и кнопок при очистке сообщения
+  useEffect(() => {
+    if (newMessage.length === 0 || (newMessage.length < 39 && linesCount <= 1)) {
+      setIsTextareaExpanded(false);
+    } else if (newMessage.length < 40) {
+      setIsTextareaExpanded(false);
+    } else if (linesCount >= 3) {
+      setIsTextareaExpanded(true);
+    }
+  }, [linesCount, newMessage]);
 
   return (
     <>
@@ -530,38 +581,55 @@ const Chat: React.FC<ChatProps> = ({
                   onSubmit={handleSendMessage}
                   className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
                 >
-                  <div className="flex space-x-3">
-                    <input
-                      type="text"
+                  <div
+                    className={`chat-input-row flex gap-3 items-end transition-all duration-300`}
+                    style={{ alignItems: "flex-end" }}
+                  >
+                    <textarea
+                      ref={textareaRef}
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       onFocus={handleInputFocus}
-                      className="chat-input-field no-zoom flex-1 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:ring-opacity-50 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
-                      style={{ fontSize: "16px" }}
+                      className={`chat-input-field no-zoom px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 focus:ring-opacity-50 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200 resize-none flex-grow`}
+                      style={{
+                        fontSize: "16px",
+                        minHeight: isTextareaExpanded ? "72px" : "40px", // 3 строки * 24px line-height
+                        maxHeight: "160px",
+                        overflowY: "hidden",
+                        transition: "width 0.3s, min-height 0.3s",
+                      }}
                       placeholder={
                         isFormFilled
                           ? t("chat.enter_message")
                           : t("chat.fill_form")
                       }
                       readOnly={!isFormFilled}
+                      rows={1}
                     />
-                    <label className="cursor-pointer flex items-center justify-center w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 transform hover:scale-105">
-                      <input
-                        type="file"
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleFileUpload(file);
-                        }}
-                      />
-                      <i className="fas fa-paperclip text-gray-500 dark:text-gray-300 text-lg"></i>
-                    </label>
-                    <button
-                      type="submit"
-                      className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white w-12 h-12 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    <div
+                      className={`chat-input-actions flex transition-all duration-300 ${
+                        isTextareaExpanded ? "flex-col gap-2" : "flex-row gap-3"
+                      }`}
+                      style={{ alignSelf: "flex-end" }}
                     >
-                      <i className="fas fa-paper-plane"></i>
-                    </button>
+                      <label className="cursor-pointer flex items-center justify-center w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 transform hover:scale-105">
+                        <input
+                          type="file"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleFileUpload(file);
+                          }}
+                        />
+                        <i className="fas fa-paperclip text-gray-500 dark:text-gray-300 text-lg"></i>
+                      </label>
+                      <button
+                        type="submit"
+                        className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white w-12 h-12 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
+                      >
+                        <i className="fas fa-paper-plane"></i>
+                      </button>
+                    </div>
                   </div>
                 </form>
               </>
